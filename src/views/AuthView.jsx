@@ -24,7 +24,7 @@ export default function AuthView({ onAuthSuccess }) {
         if (!email.trim() || !password) {
           throw new Error('Please enter both your email address and password.');
         }
-        const data = await api.auth.login({ email, password });
+        const data = await api.auth.login({ email, password, role });
         setToken(data.token);
         setStoredUser(data.user);
         onAuthSuccess(data.user);

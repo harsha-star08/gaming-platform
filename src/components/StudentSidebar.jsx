@@ -14,11 +14,8 @@ import {
   TrendingUp,
   User,
   LogOut,
-  ChevronRight,
-  Shield,
-  Layers,
-  Inbox,
-  MessageCircle
+  GraduationCap,
+  UserSearch
 } from 'lucide-react';
 
 export default function StudentSidebar({ currentView, setCurrentView, onLogout, user, pendingRequestsCount = 0 }) {
@@ -32,8 +29,7 @@ export default function StudentSidebar({ currentView, setCurrentView, onLogout, 
     {
       title: 'Learn',
       items: [
-        { id: 'courses', label: 'Course Library', icon: BookOpen },
-        { id: 'my-courses', label: 'My Courses', icon: Layers },
+        { id: 'courses', label: 'Courses', icon: BookOpen },
         { id: 'learning-progress', label: 'Learning Progress', icon: TrendingUp },
         { id: 'badges', label: 'Badges', icon: Award }
       ]
@@ -57,9 +53,9 @@ export default function StudentSidebar({ currentView, setCurrentView, onLogout, 
     {
       title: 'Mentor',
       items: [
-        { id: 'mentor-requests', label: 'Mentor Requests', icon: Inbox, badge: pendingRequestsCount },
+        { id: 'find-mentor', label: 'Find a Mentor', icon: UserSearch },
         { id: 'my-mentor', label: 'My Mentor', icon: UserCheck },
-        { id: 'mentor-feedback', label: 'Mentor Feedback', icon: MessageCircle }
+        { id: 'mentor-feedback', label: 'Mentor Feedback', icon: GraduationCap }
       ]
     },
     {

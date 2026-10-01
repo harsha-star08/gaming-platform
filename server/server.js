@@ -18,6 +18,8 @@ import rewardRoutes from './routes/rewardRoutes.js';
 import streakRoutes from './routes/streakRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import publicMentorRoutes from './routes/publicMentorRoutes.js';
+import mentorInboxRoutes from './routes/mentorInboxRoutes.js';
 
 dotenv.config();
 
@@ -56,6 +58,8 @@ app.use('/api/rewards', rewardRoutes);
 app.use('/api/streaks', streakRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/mentors', publicMentorRoutes);
+app.use('/api/mentor-inbox', mentorInboxRoutes);
 
 // Explicit 404 for unhandled API routes
 app.use('/api', (req, res) => {

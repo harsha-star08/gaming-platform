@@ -26,7 +26,7 @@ import MentorView from './views/student/MentorView';
 
 // Mentor Views
 import MentorDashboardView from './views/mentor/MentorDashboardView';
-import SearchStudentsView from './views/mentor/SearchStudentsView';
+import MentorInboxView from './views/mentor/MentorInboxView';
 import MyStudentsView from './views/mentor/MyStudentsView';
 import StudentAnalyticsView from './views/mentor/StudentAnalyticsView';
 import CreateQuizView from './views/mentor/CreateQuizView';
@@ -44,7 +44,7 @@ export default function App() {
   const [studentStats, setStudentStats] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
+  const [pendingInboxCount, setPendingInboxCount] = useState(0);
 
   // AI Chat Drawer
   const [aiChatOpen, setAiChatOpen] = useState(false);
@@ -98,13 +98,13 @@ export default function App() {
     } catch (_) {}
   }, [user]);
 
-  // ─── Load Pending Mentor Requests (student) ────────────────────────────
-  const loadPendingRequests = useCallback(async () => {
-    if (!user || user.role !== 'STUDENT') return;
+  // ─── Load Pending Mentor Requests (mentor) ────────────────────────────
+  const loadPendingInbox = useCallback(async () => {
+    if (!user || user.role !== 'MENTOR') return;
     try {
-      const data = await api.mentorRequests.getRequests();
+      const data = await api.mentorInbox.getRequests();
       const pending = (Array.isArray(data) ? data : (data.requests || [])).filter(r => r.status === 'PENDING');
-      setPendingRequestsCount(pending.length);
+      setPendingInboxCount(pending.length);
     } catch (_) {}
   }, [user]);
 
@@ -114,17 +114,18 @@ export default function App() {
 
     if (user.role === 'STUDENT') {
       loadDashboard();
-      loadPendingRequests();
+    } else if (user.role === 'MENTOR') {
+      loadPendingInbox();
     }
     loadNotifications();
 
     notifPollRef.current = setInterval(() => {
       loadNotifications();
-      if (user.role === 'STUDENT') loadPendingRequests();
+      if (user.role === 'MENTOR') loadPendingInbox();
     }, 30000);
 
     return () => clearInterval(notifPollRef.current);
-  }, [user, loadDashboard, loadNotifications, loadPendingRequests]);
+  }, [user, loadDashboard, loadNotifications, loadPendingInbox]);
 
   // ─── Navigation helper ────────────────────────────────────────────────
   const handleNavigate = useCallback((view, param = null) => {
@@ -219,7 +220,6 @@ export default function App() {
           setCurrentView={(v) => handleNavigate(v)}
           onLogout={handleLogout}
           user={user}
-          pendingRequestsCount={pendingRequestsCount}
         />
 
         <div className="main-wrapper">
@@ -277,6 +277,7 @@ export default function App() {
           setCurrentView={(v) => handleNavigate(v)}
           onLogout={handleLogout}
           user={user}
+          pendingInboxCount={pendingInboxCount}
         />
 
         <div className="main-wrapper">
@@ -416,17 +417,17 @@ function StudentRouter({ currentView, routeParam, user, dashboardData, onNavigat
     case 'profile':
       return <ProfileView />;
 
+    case 'find-mentor':
     case 'my-mentor':
-    case 'mentor-feedback':
-    case 'mentor-requests': {
+    case 'mentor-feedback': {
       const tabMap = {
-        'mentor-requests': 'requests',
+        'find-mentor': 'find-mentor',
         'my-mentor': 'my-mentor',
-        'mentor-feedback': 'feedback'
+        'mentor-feedback': 'mentor-feedback'
       };
       return (
         <MentorView
-          initialTab={tabMap[currentView] || 'requests'}
+          initialTab={tabMap[currentView] || 'find-mentor'}
           onRefreshStats={onRefreshStats}
         />
       );
@@ -458,14 +459,14 @@ function MentorRouter({ currentView, routeParam, user, onNavigate }) {
         />
       );
 
-    case 'search-students':
-      return <SearchStudentsView />;
+    case 'mentor-inbox':
+      return <MentorInboxView />;
 
     case 'my-students':
       return (
         <MyStudentsView
           onSelectStudent={(studentId) => goTo('student-analytics', studentId)}
-          onNavigateToSearch={() => goTo('search-students')}
+          onNavigateToSearch={() => goTo('mentor-inbox')}
         />
       );
 

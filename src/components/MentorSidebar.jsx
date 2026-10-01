@@ -2,21 +2,18 @@ import React from 'react';
 import {
   LayoutDashboard,
   Users,
-  UserPlus,
-  FileCheck,
-  PlusCircle,
-  Code2,
-  ListTodo,
+  Inbox,
   TrendingUp,
   MessageSquare,
-  Sparkles,
   User,
   LogOut,
   ShieldCheck,
-  Search
+  PlusCircle,
+  Code2,
+  ListTodo
 } from 'lucide-react';
 
-export default function MentorSidebar({ currentView, setCurrentView, onLogout, user }) {
+export default function MentorSidebar({ currentView, setCurrentView, onLogout, user, pendingInboxCount = 0 }) {
   const navSections = [
     {
       title: null,
@@ -27,9 +24,8 @@ export default function MentorSidebar({ currentView, setCurrentView, onLogout, u
     {
       title: 'Students & Mentorship',
       items: [
+        { id: 'mentor-inbox', label: 'Mentor Requests', icon: Inbox, badge: pendingInboxCount },
         { id: 'my-students', label: 'My Students', icon: Users },
-        { id: 'search-students', label: 'Search Students', icon: Search },
-        { id: 'mentor-sent-requests', label: 'Mentor Requests', icon: UserPlus },
         { id: 'student-analytics', label: 'Student Analytics', icon: TrendingUp },
         { id: 'mentor-feedback', label: 'Student Feedback', icon: MessageSquare }
       ]
@@ -40,12 +36,6 @@ export default function MentorSidebar({ currentView, setCurrentView, onLogout, u
         { id: 'create-quiz', label: 'Create Quiz', icon: PlusCircle },
         { id: 'create-challenge', label: 'Create Coding Challenge', icon: Code2 },
         { id: 'mentor-assignments', label: 'My Assignments', icon: ListTodo }
-      ]
-    },
-    {
-      title: 'Intelligence',
-      items: [
-        { id: 'mentor-ai-insights', label: 'AI Insights', icon: Sparkles }
       ]
     },
     {
@@ -87,6 +77,7 @@ export default function MentorSidebar({ currentView, setCurrentView, onLogout, u
                 >
                   <Icon size={18} />
                   <span>{item.label}</span>
+                  {item.badge > 0 && <span className="nav-badge">{item.badge}</span>}
                 </button>
               );
             })}

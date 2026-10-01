@@ -118,6 +118,20 @@ export const api = {
     accept: (requestId) => request(`/mentor-requests/${requestId}/accept`, { method: 'POST' }),
     decline: (requestId) => request(`/mentor-requests/${requestId}/decline`, { method: 'POST' })
   },
+  mentors: {
+    getAll: (params = {}) => {
+      const q = new URLSearchParams(params).toString();
+      return request(`/mentors${q ? '?' + q : ''}`);
+    },
+    sendRequest: (mentorId, message) => request(`/mentors/${mentorId}/request`, { method: 'POST', body: JSON.stringify({ message }) }),
+    getMyRequests: () => request('/mentors/my-requests'),
+    getMyMentor: () => request('/mentors/my-mentor')
+  },
+  mentorInbox: {
+    getRequests: () => request('/mentor-inbox'),
+    accept: (requestId) => request(`/mentor-inbox/${requestId}/accept`, { method: 'POST' }),
+    decline: (requestId) => request(`/mentor-inbox/${requestId}/decline`, { method: 'POST' })
+  },
   assignments: {
     getStudentAssignments: () => request('/assignments'),
     getAssignmentDetail: (tokenOrId) => request(`/assignments/${tokenOrId}`),

@@ -83,7 +83,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required.' });
@@ -99,6 +99,15 @@ router.post('/login', async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid email or password.' });
+    }
+
+    // Role validation: selected role must match the user's actual database role
+    if (role && user.role !== role) {
+      const actualRoleLabel = user.role === 'STUDENT' ? 'Student' : 'Mentor';
+      const correctSelection = user.role === 'STUDENT' ? 'Student' : 'Mentor';
+      return res.status(403).json({
+        error: `These credentials belong to a ${actualRoleLabel} account. Please select ${correctSelection} to continue.`
+      });
     }
 
     const safeUser = {
